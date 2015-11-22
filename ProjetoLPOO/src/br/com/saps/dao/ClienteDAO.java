@@ -6,6 +6,7 @@ public class ClienteDAO {
 
 	/*
 	 * Metodo para Inserção
+	 * 
 	 */
 	public Cliente[] inserir(Cliente[] clientes, Cliente novoCliente) {
 		Cliente[] aux = null;

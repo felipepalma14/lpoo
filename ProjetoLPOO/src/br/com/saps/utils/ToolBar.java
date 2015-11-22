@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,7 +17,7 @@ import javax.swing.SwingConstants;
 /**
  * @Panel of Tool Bar
  */
-public class ToolBar extends JPanel implements ActionListener {
+public class ToolBar extends JPanel {
 
 	int qtdeBotoes = 7;
 	public JScrollPane pCad;
@@ -55,7 +53,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bIncluir = new JButton(vectorImageToolBar[0]);
 		bIncluir.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bIncluir.addActionListener(this);
+		// bIncluir.addActionListener(this);
 		bIncluir.setToolTipText("Inclui um novo registro");
 		bIncluir.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bIncluir.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -63,7 +61,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bAtualizar = new JButton(vectorImageToolBar[1]);
 		bAtualizar.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bAtualizar.addActionListener(this);
+		// bAtualizar.addActionListener(this);
 		bAtualizar.setToolTipText("Atualiza registro");
 		bAtualizar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bAtualizar.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -72,7 +70,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bExcluir = new JButton(vectorImageToolBar[2]);
 		bExcluir.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bExcluir.addActionListener(this);
+		// bExcluir.addActionListener(this);
 		bExcluir.setToolTipText("Exclui registro");
 		bExcluir.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bExcluir.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -81,7 +79,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bConfirmar = new JButton(vectorImageToolBar[3]);
 		bConfirmar.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bConfirmar.addActionListener(this);
+		// bConfirmar.addActionListener(this);
 		bConfirmar.setToolTipText("Confirma operação");
 		bConfirmar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bConfirmar.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -90,7 +88,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bCancelar = new JButton(vectorImageToolBar[4]);
 		bCancelar.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bCancelar.addActionListener(this);
+		// bCancelar.addActionListener(this);
 		bCancelar.setToolTipText("Cancelar operação");
 		bCancelar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bCancelar.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -99,7 +97,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bLimpar = new JButton(vectorImageToolBar[5]);
 		bLimpar.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bLimpar.addActionListener(this);
+		// bLimpar.addActionListener(this);
 		bLimpar.setToolTipText("Limpa os campos");
 		bLimpar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bLimpar.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -108,7 +106,7 @@ public class ToolBar extends JPanel implements ActionListener {
 
 		bPesquisar = new JButton(vectorImageToolBar[6]);
 		bPesquisar.setFont(new Font("TimesRoman", Font.PLAIN, 18));
-		bPesquisar.addActionListener(this);
+		// bPesquisar.addActionListener(this);
 		bPesquisar.setToolTipText("Pesquisa de registros");
 		bPesquisar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		bPesquisar.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -140,18 +138,6 @@ public class ToolBar extends JPanel implements ActionListener {
 		BarraFer.setOpaque(false);
 		BarraFer.setBackground(null);
 		add(BarraFer);
-
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		int temp = 0;
-		/*
-		 * if (e.getSource()==bIncluir) incluir(); else
-		 * if(e.getSource()==bAtualizar) atualizar(); else
-		 * if(e.getSource()==bExcluir) excluir(); else
-		 * if(e.getSource()==bConfirmar) confirmar(); else
-		 * if(e.getSource()==bPesquisar) pesquisar(); else temp = 0;
-		 */
 
 	}
 

@@ -24,9 +24,9 @@ public class Acesso extends JDialog implements ActionListener {
 	public JPasswordField tfSenha;
 	public JButton bEntrar, bCancelar;
 	public JLabel lUsuario, lSenha;
-	public TelaPrincipal telaPrincipal;
+	public TelaProfissional telaPrincipal;
 
-	public Acesso(Frame owner, String title, boolean modal, TelaPrincipal tela) {
+	public Acesso(Frame owner, String title, boolean modal, TelaProfissional tela) {
 		super(owner, title, modal);
 		this.telaPrincipal = tela;
 		setResizable(false);

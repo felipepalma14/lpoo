@@ -33,9 +33,22 @@ public class Data {
 		this.ano = ano;
 	}
 
+	public static Data montaData(String dia, String mes, String ano) {
+		return new Data(Integer.parseInt(dia), Integer.parseInt(mes), Integer.parseInt(ano));
+	}
+
 	@Override
 	public String toString() {
-		return dia + "/" + mes + "/" + ano;
+		String diaAcrescimo = "", mesAcrecimo = "";
+		for (int i = 1; i < 10; i++) {
+			if (dia == i) {
+				diaAcrescimo = "0";
+			}
+			if (mes == i) {
+				mesAcrecimo = "0";
+			}
+		}
+		return "" + diaAcrescimo + dia + mesAcrecimo + mes + ano;
 	}
 
 }

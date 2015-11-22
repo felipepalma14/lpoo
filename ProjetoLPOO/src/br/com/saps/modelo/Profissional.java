@@ -9,6 +9,9 @@ public class Profissional {
 	private String tipo;
 	private Data data;
 
+	public Profissional() {
+	}
+
 	public Profissional(String matricula, String cpf, String nome, String numeroRP, String sigla, String tipo,
 			Data data) {
 		this.matricula = matricula;

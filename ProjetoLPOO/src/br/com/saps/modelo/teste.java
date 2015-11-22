@@ -22,7 +22,7 @@ public class teste {
 
 		clienteDAO.mostrarClientes(arquivoCliente);
 
-		System.out.println("Resultado: " + clienteDAO.buscarCliente(arquivoCliente, 2));
+		System.out.println("Resultado: " + clienteDAO.buscarCliente(arquivoCliente, felipe.getCodigo()));
 
 	}
 
