@@ -29,21 +29,20 @@ public class TelaProfissional extends JFrame implements ActionListener {
 	private JLabel lProfissional;
 	private JTextField tfProfissional;
 	private JTextField tfMatricula;
-	private JTextField tfCpf;
 	private JTextField tfRegisProf;
 	private JLabel lRegisProf;
 	private JLabel tSigla;
 	private JTextField tfSigla;
 	private JLabel lTipo;
 	private JTextField tfTipo;
-	private JFormattedTextField tfData;
+	private JFormattedTextField tfData, tfCpf;
 	private ProfissionalDAO profissionalDAO;
 	private Profissional[] arquivoProfissional;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void abrirTela() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -113,11 +112,16 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		lCpf.setBounds(20, 81, 46, 14);
 		panel.add(lCpf);
 
-		tfCpf = new JTextField();
-		tfCpf.setBounds(124, 81, 86, 20);
-		panel.add(tfCpf);
-		tfCpf.setColumns(10);
-		tfCpf.setEnabled(false);
+		JFormattedTextField format = null;
+		try {
+			tfCpf = new JFormattedTextField(new MaskFormatter("###.###.###-##"));
+			tfCpf.setBounds(124, 81, 96, 20);
+			panel.add(tfCpf);
+			tfCpf.setColumns(10);
+			tfCpf.setEnabled(false);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
 		JLabel lData = new JLabel("Data");
 		lData.setBounds(20, 106, 46, 14);
@@ -167,10 +171,12 @@ public class TelaProfissional extends JFrame implements ActionListener {
 
 		barraFerramentas.bConfirmar.setEnabled(false);
 		barraFerramentas.bCancelar.setEnabled(false);
+
 		barraFerramentas.bIncluir.addActionListener(this);
 		barraFerramentas.bConfirmar.addActionListener(this);
 		barraFerramentas.bPesquisar.addActionListener(this);
 		barraFerramentas.bLimpar.addActionListener(this);
+		barraFerramentas.bCancelar.addActionListener(this);
 	}
 
 	@Override
@@ -192,32 +198,32 @@ public class TelaProfissional extends JFrame implements ActionListener {
 			try {
 				Data data = Data.montaData(tfData.getText().substring(0, 2), tfData.getText().substring(3, 5),
 						tfData.getText().substring(6, 10));
+				String[] componentes = { tfProfissional.getText(), tfMatricula.getText(), tfSigla.getText(),
+						tfTipo.getText(), tfRegisProf.getText() };
+				for (String componente : componentes) {
+					if (componente.equals("")) {
+						JOptionPane.showMessageDialog(null, "Preencha todos os campos!!!", "Operação Invalida",
+								JOptionPane.ERROR_MESSAGE);
+						break;
+					}
+				}
 				Profissional novoProfissional = profissionalDAO.criarProfissional(tfProfissional.getText(),
 						tfMatricula.getText(), tfCpf.getText(), data, tfSigla.getText(), tfTipo.getText(),
 						tfRegisProf.getText());
 				arquivoProfissional = profissionalDAO.inserirProfissional(arquivoProfissional, novoProfissional);
-			} catch (Exception er) {
 
-				JOptionPane.showMessageDialog(null, "Preencha todos os campos!!!", "Operação Invalida",
+			} catch (NumberFormatException er) {
+				JOptionPane.showMessageDialog(null, "Campo **Data ou **CPF invalidos!!!", "Operação Invalida",
 						JOptionPane.ERROR_MESSAGE);
 			}
 			// se tudo tiver ok, limpa os campos
 			tfMatricula.setText("");
-			tfProfissional.setText("");
-			tfCpf.setText("");
-			tfData.setText("");
-			tfSigla.setText("");
-			tfTipo.setText("");
-			tfRegisProf.setText("");
+			limparCamposProfissional();
 
 			tfMatricula.setEnabled(true);
-			tfProfissional.setEnabled(false);
-
-			tfCpf.setEnabled(false);
-			tfData.setEnabled(false);
-			tfSigla.setEnabled(false);
-			tfTipo.setEnabled(false);
-			tfRegisProf.setEnabled(false);
+			barraFerramentas.bConfirmar.setEnabled(false);
+			barraFerramentas.bCancelar.setEnabled(false);
+			desativarCamposProfissional();
 
 		} else if (e.getSource() == barraFerramentas.bPesquisar) {
 			/*
@@ -227,36 +233,62 @@ public class TelaProfissional extends JFrame implements ActionListener {
 			try {
 				profissional = profissionalDAO.buscarProfissional(arquivoProfissional,
 						Integer.parseInt(tfMatricula.getText()));
+				tfMatricula.setText(profissional.getMatricula());
+				tfProfissional.setText(profissional.getNome());
+				tfCpf.setText(profissional.getCpf());
+				tfData.setText(String.valueOf(profissional.getData()));
+				System.out.println(String.valueOf(profissional.getData()));
+
+				tfSigla.setText(profissional.getSigla());
+				tfTipo.setText(profissional.getTipo());
+				tfRegisProf.setText(profissional.getNumeroRP());
+
+			} catch (NullPointerException e1) {
+				JOptionPane.showMessageDialog(null, "Sem dados cadastrados!!!", "Aviso", JOptionPane.ERROR_MESSAGE);
 			} catch (NumberFormatException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Por favor,insira um valor valido no campo **Matricula!!!",
+						"Operação Invalida", JOptionPane.WARNING_MESSAGE);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			} finally {
+				tfMatricula.setText("");
+
 			}
-
-			tfMatricula.setText(profissional.getMatricula());
-			tfProfissional.setText(profissional.getNome());
-			tfCpf.setText(profissional.getCpf());
-			tfData.setText(String.valueOf(profissional.getData()));
-			System.out.println(String.valueOf(profissional.getData()));
-
-			tfSigla.setText(profissional.getSigla());
-			tfTipo.setText(profissional.getTipo());
-			tfRegisProf.setText(profissional.getNumeroRP());
 
 		} else if (e.getSource() == barraFerramentas.bLimpar)
 
 		{
-			tfProfissional.setText("");
-			tfCpf.setText("");
-			tfData.setText("");
-			tfSigla.setText("");
-			tfTipo.setText("");
-			tfRegisProf.setText("");
+			limparCamposProfissional();
+
+		} else if (e.getSource() == barraFerramentas.bCancelar) {
+			tfMatricula.setEnabled(true);
+			tfMatricula.setText("");
+
+			limparCamposProfissional();
+
+			desativarCamposProfissional();
+
+			JOptionPane.showMessageDialog(null, "Operação Cancelada!!!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
 
 		}
-
 	}
 
+	private void desativarCamposProfissional() {
+		tfProfissional.setEnabled(false);
+		tfCpf.setEnabled(false);
+		tfData.setEnabled(false);
+		tfSigla.setEnabled(false);
+		tfTipo.setEnabled(false);
+		tfRegisProf.setEnabled(false);
+	}
+
+	private void limparCamposProfissional() {
+		tfProfissional.setText("");
+		tfCpf.setText("");
+		tfData.setText("");
+		tfSigla.setText("");
+		tfTipo.setText("");
+		tfRegisProf.setText("");
+	}
 }
