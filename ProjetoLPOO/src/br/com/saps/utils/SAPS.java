@@ -15,10 +15,10 @@ import br.com.saps.views.TelaProfissional;
 
 public class SAPS extends JFrame implements ActionListener {
 	// Declaração globa
-	private JLabel lTitulo, lHabilitar, lDesabilitar, lCliente, lProfissional, lSair;
+	private JLabel lTitulo, lHabilitar, lDesabilitar, lCliente, lProfissional, lAtendimento, lSair;
 	private Acesso fAcesso;
 
-	private JButton bHabilitar, bCliente, bProfissional, bSair;
+	private JButton bHabilitar, bCliente, bProfissional, bAtendimento, bSair;
 
 	private SAPS() {
 		setTitle("SAPS: Sistema de Atendimento Profissional de Saúde");
@@ -71,16 +71,28 @@ public class SAPS extends JFrame implements ActionListener {
 		lProfissional.setBounds(100, 340, 400, 50);
 		areaTrabalho.add(lProfissional);
 
+		ImageIcon iAtendimento = new ImageIcon("imagem/atendimento.png");
+		bAtendimento = new JButton(iAtendimento);
+		bAtendimento.addActionListener(this);
+		areaTrabalho.add(bAtendimento);
+		bAtendimento.setBounds(20, 400, 50, 50);
+		bAtendimento.setEnabled(false);
+
+		lAtendimento = new JLabel("Atendimento");
+		lAtendimento.setFont(new Font("TimesRoman", Font.ITALIC, 30));
+		lAtendimento.setBounds(100, 400, 400, 50);
+		areaTrabalho.add(lAtendimento);
+
 		ImageIcon iSair = new ImageIcon("imagem/sair.png");
 		bSair = new JButton(iSair);
 		bSair.addActionListener(this);
 		areaTrabalho.add(bSair);
-		bSair.setBounds(20, 400, 50, 50);
+		bSair.setBounds(20, 480, 50, 50);
 		bSair.setEnabled(true);
 
 		lSair = new JLabel("Sair do Sistema");
 		lSair.setFont(new Font("TimesRoman", Font.ITALIC, 30));
-		lSair.setBounds(100, 400, 400, 50);
+		lSair.setBounds(100, 480, 400, 50);
 		areaTrabalho.add(lSair);
 
 		// Criação da Tabela de clientes com espaço para 20 registros

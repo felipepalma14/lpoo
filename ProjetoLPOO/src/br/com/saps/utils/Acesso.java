@@ -79,7 +79,7 @@ public class Acesso extends JDialog implements ActionListener {
 		// Painel para agrupar objetos
 		// Painel com bordas para agrupar configurações de abertura de arquivo
 		// de vídeo
-		String titleBorda = "Digita o nome e a senha de acesso";
+		String titleBorda = "Login";
 		Border border = BorderFactory.createEtchedBorder();
 		Border borderTitle = BorderFactory.createTitledBorder(border, titleBorda, TitledBorder.DEFAULT_JUSTIFICATION,
 				TitledBorder.DEFAULT_POSITION, new Font("TimesRoman", Font.PLAIN, 30));

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +40,9 @@ public class TelaProfissional extends JFrame implements ActionListener {
 	private JFormattedTextField tfData, tfCpf;
 	private ProfissionalDAO profissionalDAO;
 	private Profissional[] arquivoProfissional;
+	private JButton bPesquisar;
+
+	private int temp = 0;
 
 	/**
 	 * Launch the application.
@@ -106,7 +111,13 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		tfMatricula.setBounds(124, 31, 86, 20);
 		panel.add(tfMatricula);
 		tfMatricula.setColumns(10);
-		// tfMatricula.setEnabled(false);
+		tfMatricula.setEnabled(false);
+
+		ImageIcon iPesquisar = new ImageIcon("imagem/pesquisa.gif");
+		bPesquisar = new JButton(iPesquisar);
+		bPesquisar.addActionListener(this);
+		panel.add(bPesquisar);
+		bPesquisar.setBounds(220, 20, 30, 30);
 
 		JLabel lCpf = new JLabel("CPF");
 		lCpf.setBounds(20, 81, 46, 14);
@@ -177,11 +188,18 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		barraFerramentas.bPesquisar.addActionListener(this);
 		barraFerramentas.bLimpar.addActionListener(this);
 		barraFerramentas.bCancelar.addActionListener(this);
+		barraFerramentas.bExcluir.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
+		/*
+		 * 1 - incluir 2 - pesquisar 3 - excluir
+		 */
+
 		if (e.getSource() == barraFerramentas.bIncluir) {
+			temp = 1;
 			barraFerramentas.bConfirmar.setEnabled(true);
 			barraFerramentas.bCancelar.setEnabled(true);
 
@@ -195,26 +213,99 @@ public class TelaProfissional extends JFrame implements ActionListener {
 			tfData.setEnabled(true);
 
 		} else if (e.getSource() == barraFerramentas.bConfirmar) {
-			try {
-				Data data = Data.montaData(tfData.getText().substring(0, 2), tfData.getText().substring(3, 5),
-						tfData.getText().substring(6, 10));
-				String[] componentes = { tfProfissional.getText(), tfMatricula.getText(), tfSigla.getText(),
-						tfTipo.getText(), tfRegisProf.getText() };
-				for (String componente : componentes) {
-					if (componente.equals("")) {
-						JOptionPane.showMessageDialog(null, "Preencha todos os campos!!!", "Operação Invalida",
-								JOptionPane.ERROR_MESSAGE);
-						break;
+			switch (temp) {
+			case 1:
+				try {
+					Data data = Data.montaData(tfData.getText().substring(0, 2), tfData.getText().substring(3, 5),
+							tfData.getText().substring(6, 10));
+					String[] componentes = { tfProfissional.getText(), tfMatricula.getText(), tfSigla.getText(),
+							tfTipo.getText(), tfRegisProf.getText() };
+					for (String componente : componentes) {
+						if (componente.equals("")) {
+							JOptionPane.showMessageDialog(null, "Preencha todos os campos!!!", "Operação Invalida",
+									JOptionPane.ERROR_MESSAGE);
+							break;
+						}
 					}
-				}
-				Profissional novoProfissional = profissionalDAO.criarProfissional(tfProfissional.getText(),
-						tfMatricula.getText(), tfCpf.getText(), data, tfSigla.getText(), tfTipo.getText(),
-						tfRegisProf.getText());
-				arquivoProfissional = profissionalDAO.inserirProfissional(arquivoProfissional, novoProfissional);
+					Profissional novoProfissional = profissionalDAO.criarProfissional(tfProfissional.getText(),
+							tfMatricula.getText(), tfCpf.getText(), data, tfSigla.getText(), tfTipo.getText(),
+							tfRegisProf.getText());
+					arquivoProfissional = profissionalDAO.inserirProfissional(arquivoProfissional, novoProfissional);
 
-			} catch (NumberFormatException er) {
-				JOptionPane.showMessageDialog(null, "Campo **Data ou **CPF invalidos!!!", "Operação Invalida",
-						JOptionPane.ERROR_MESSAGE);
+				} catch (NumberFormatException er) {
+					JOptionPane.showMessageDialog(null, "Campo **Data ou **CPF invalidos!!!", "Operação Invalida",
+							JOptionPane.ERROR_MESSAGE);
+				}
+
+				break;
+			case 2:
+				Profissional profissional = null;
+				try {
+					profissional = profissionalDAO.buscarProfissional(arquivoProfissional, tfMatricula.getText());
+					tfMatricula.setText(profissional.getMatricula());
+					tfProfissional.setText(profissional.getNome());
+					tfCpf.setText(profissional.getCpf());
+					tfData.setText(String.valueOf(profissional.getData()));
+					System.out.println(String.valueOf(profissional.getData()));
+
+					tfSigla.setText(profissional.getSigla());
+					tfTipo.setText(profissional.getTipo());
+					tfRegisProf.setText(profissional.getNumeroRP());
+
+				} catch (NullPointerException e1) {
+					JOptionPane.showMessageDialog(null, "Sem dados cadastrados!!!", "Aviso", JOptionPane.ERROR_MESSAGE);
+				} catch (NumberFormatException e1) {
+					JOptionPane.showMessageDialog(null, "Por favor,insira um valor valido no campo **Matricula!!!",
+							"Operação Invalida", JOptionPane.WARNING_MESSAGE);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} finally {
+					tfMatricula.setText("");
+
+				}
+				break;
+			case 3:
+				tfMatricula.setEnabled(true);
+				if (!tfMatricula.getText().equals("")) {
+					try {
+						if (profissionalDAO.buscarProfissional(arquivoProfissional, tfMatricula.getText()) != null) {
+							int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir?", "Alerta",
+									JOptionPane.YES_NO_OPTION);
+							System.out.println(resposta);
+
+							if (resposta == 0) {
+								try {
+									arquivoProfissional = profissionalDAO.excluirProfissional(arquivoProfissional,
+											tfMatricula.getText());
+									JOptionPane.showMessageDialog(null, "Dado excluido com sucesso!!!", "Informação",
+											JOptionPane.INFORMATION_MESSAGE);
+								} catch (NullPointerException err) {
+									JOptionPane.showMessageDialog(null,
+											"Por favor,insira um valor valido no campo **Matricula!!!",
+											"Operação Invalida", JOptionPane.WARNING_MESSAGE);
+								}
+							} else {
+								tfMatricula.setEnabled(false);
+								barraFerramentas.bConfirmar.setEnabled(false);
+								barraFerramentas.bCancelar.setEnabled(false);
+							}
+						}
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, "Matricula nao cadastrada!!!", "Operação Invalida",
+								JOptionPane.WARNING_MESSAGE);
+					}
+
+				} else {
+					JOptionPane.showMessageDialog(null, "Por favor,insira um valor valido no campo **Matricula!!!",
+							"Operação Invalida", JOptionPane.WARNING_MESSAGE);
+				}
+				temp = 0;
+
+				break;
+			default:
+				System.out.println("lol");
+				break;
 			}
 			// se tudo tiver ok, limpa os campos
 			tfMatricula.setText("");
@@ -224,39 +315,23 @@ public class TelaProfissional extends JFrame implements ActionListener {
 			barraFerramentas.bConfirmar.setEnabled(false);
 			barraFerramentas.bCancelar.setEnabled(false);
 			desativarCamposProfissional();
+			temp = 0;
 
 		} else if (e.getSource() == barraFerramentas.bPesquisar) {
 			/*
 			 * Pensar melhor aqui
 			 */
-			Profissional profissional = null;
-			try {
-				profissional = profissionalDAO.buscarProfissional(arquivoProfissional,
-						Integer.parseInt(tfMatricula.getText()));
-				tfMatricula.setText(profissional.getMatricula());
-				tfProfissional.setText(profissional.getNome());
-				tfCpf.setText(profissional.getCpf());
-				tfData.setText(String.valueOf(profissional.getData()));
-				System.out.println(String.valueOf(profissional.getData()));
+			temp = 2;
 
-				tfSigla.setText(profissional.getSigla());
-				tfTipo.setText(profissional.getTipo());
-				tfRegisProf.setText(profissional.getNumeroRP());
+		} else if (e.getSource() == barraFerramentas.bExcluir) {
+			temp = 3;
+			tfMatricula.setEnabled(true);
+			barraFerramentas.bConfirmar.setEnabled(true);
+			barraFerramentas.bCancelar.setEnabled(true);
 
-			} catch (NullPointerException e1) {
-				JOptionPane.showMessageDialog(null, "Sem dados cadastrados!!!", "Aviso", JOptionPane.ERROR_MESSAGE);
-			} catch (NumberFormatException e1) {
-				JOptionPane.showMessageDialog(null, "Por favor,insira um valor valido no campo **Matricula!!!",
-						"Operação Invalida", JOptionPane.WARNING_MESSAGE);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} finally {
-				tfMatricula.setText("");
+		}
 
-			}
-
-		} else if (e.getSource() == barraFerramentas.bLimpar)
+		else if (e.getSource() == barraFerramentas.bLimpar)
 
 		{
 			limparCamposProfissional();
@@ -270,6 +345,9 @@ public class TelaProfissional extends JFrame implements ActionListener {
 			desativarCamposProfissional();
 
 			JOptionPane.showMessageDialog(null, "Operação Cancelada!!!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+
+			barraFerramentas.bConfirmar.setEnabled(false);
+			barraFerramentas.bCancelar.setEnabled(false);
 
 		}
 	}

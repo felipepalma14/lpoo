@@ -28,9 +28,9 @@ public class ProfissionalDAO {
 	 * Metodo Buscar Cliente Retorna um objeto do tipo Cliente de acordo com o
 	 * codigo do cliente passado na assinatura do metodo
 	 */
-	public Profissional buscarProfissional(Profissional[] profissionais, int matricula) throws Exception {
+	public Profissional buscarProfissional(Profissional[] profissionais, String matricula) throws Exception {
 		for (int i = 0; i < profissionais.length; i++) {
-			if (Integer.parseInt(profissionais[i].getMatricula()) == matricula) {
+			if (profissionais[i].getMatricula().equals(matricula)) {
 				return profissionais[i];
 			}
 		}
@@ -51,6 +51,19 @@ public class ProfissionalDAO {
 		 * 
 		 * em desenvolvimento
 		 */
+	}
+
+	public Profissional[] excluirProfissional(Profissional[] profissionais, String matricula)
+			throws NullPointerException {
+		Profissional[] novoArray = new Profissional[profissionais.length - 1];
+		for (int i = 0; i < profissionais.length; i++) {
+			if (profissionais[i].getMatricula().equals(matricula)) {
+				continue;
+			} else {
+				novoArray[i] = profissionais[i];
+			}
+		}
+		return novoArray;
 	}
 
 	public Profissional criarProfissional(String nome, String matricula, String cpf, Data nasc, String sigla,

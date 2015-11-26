@@ -7,12 +7,14 @@ public class Atendimento {
 	private String descrição;
 	private Data dataCriacao;
 
-	public Atendimento(String protocolo, Profissional matricula, Cliente codigo, String descrição, Data dataCriacao) {
+	public Atendimento(String protocolo, Profissional profissional, Cliente cliente, String descrição,
+			Data dataCriacao) {
 		this.protocolo = protocolo;
-		this.matricula = matricula;
-		this.codigo = codigo;
+		this.matricula = profissional;
+		this.codigo = cliente;
 		this.descrição = descrição;
 		this.dataCriacao = dataCriacao;
+
 	}
 
 	public String getProtocolo() {
