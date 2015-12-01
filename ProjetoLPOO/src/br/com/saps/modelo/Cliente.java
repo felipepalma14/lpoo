@@ -3,11 +3,18 @@ package br.com.saps.modelo;
 public class Cliente {
 
 	private int codigo;
-	private String nome;
+	private String nome, email;
+	private int telefone, celular;
 	private Data dataNasc;
+	private int idade;
 	private char sexo; // M: masculino; F: feminino
+	private Endereco endereco;
 
 	public Cliente() {
+	}
+
+	public Cliente(String nome) {
+		this.nome = nome;
 	}
 
 	public Cliente(int codigo, String nome, Data nascimento, char sexo) {
@@ -58,6 +65,14 @@ public class Cliente {
 
 	public Cliente getCliente() {
 		return this;
+	}
+
+	public Endereco getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 
 	@Override

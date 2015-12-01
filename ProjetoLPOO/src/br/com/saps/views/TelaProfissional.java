@@ -1,11 +1,11 @@
 package br.com.saps.views;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,33 +39,24 @@ public class TelaProfissional extends JFrame implements ActionListener {
 	private JTextField tfTipo;
 	private JFormattedTextField tfData, tfCpf;
 	private ProfissionalDAO profissionalDAO;
-	private Profissional[] arquivoProfissional;
-	private JButton bPesquisar;
+	private ArrayList<Profissional> arquivoProfissional;// =
+														// Conexao.getInstance().getArrayListProfissional();
+	private JButton bPesquisarMatricula;
 
 	private int temp = 0;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void abrirTela() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TelaProfissional window = new TelaProfissional();
-					window.frmSapsSistema.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
 	 */
-	public TelaProfissional() {
+	public TelaProfissional(ArrayList<Profissional> arquivo) {
 		initialize();
-		Acesso acesso = new Acesso(frmSapsSistema, "TESTE", true, this);
+		this.arquivoProfissional = arquivo;
+		frmSapsSistema.setVisible(true);
+		frmSapsSistema.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 
 	/**
@@ -114,10 +105,11 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		tfMatricula.setEnabled(false);
 
 		ImageIcon iPesquisar = new ImageIcon("imagem/pesquisa.gif");
-		bPesquisar = new JButton(iPesquisar);
-		bPesquisar.addActionListener(this);
-		panel.add(bPesquisar);
-		bPesquisar.setBounds(220, 20, 30, 30);
+		bPesquisarMatricula = new JButton(iPesquisar);
+		// bPesquisarMatricula.addActionListener(this);
+		panel.add(bPesquisarMatricula);
+		bPesquisarMatricula.setBounds(220, 20, 30, 30);
+		bPesquisarMatricula.setEnabled(false);
 
 		JLabel lCpf = new JLabel("CPF");
 		lCpf.setBounds(20, 81, 46, 14);
@@ -189,6 +181,7 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		barraFerramentas.bLimpar.addActionListener(this);
 		barraFerramentas.bCancelar.addActionListener(this);
 		barraFerramentas.bExcluir.addActionListener(this);
+		bPesquisarMatricula.addActionListener(this);
 	}
 
 	@Override
@@ -235,38 +228,13 @@ public class TelaProfissional extends JFrame implements ActionListener {
 				} catch (NumberFormatException er) {
 					JOptionPane.showMessageDialog(null, "Campo **Data ou **CPF invalidos!!!", "Operação Invalida",
 							JOptionPane.ERROR_MESSAGE);
-				}
-
-				break;
-			case 2:
-				Profissional profissional = null;
-				try {
-					profissional = profissionalDAO.buscarProfissional(arquivoProfissional, tfMatricula.getText());
-					tfMatricula.setText(profissional.getMatricula());
-					tfProfissional.setText(profissional.getNome());
-					tfCpf.setText(profissional.getCpf());
-					tfData.setText(String.valueOf(profissional.getData()));
-					System.out.println(String.valueOf(profissional.getData()));
-
-					tfSigla.setText(profissional.getSigla());
-					tfTipo.setText(profissional.getTipo());
-					tfRegisProf.setText(profissional.getNumeroRP());
-
-				} catch (NullPointerException e1) {
-					JOptionPane.showMessageDialog(null, "Sem dados cadastrados!!!", "Aviso", JOptionPane.ERROR_MESSAGE);
-				} catch (NumberFormatException e1) {
-					JOptionPane.showMessageDialog(null, "Por favor,insira um valor valido no campo **Matricula!!!",
-							"Operação Invalida", JOptionPane.WARNING_MESSAGE);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				} finally {
-					tfMatricula.setText("");
-
+					temp = 0;
 				}
 				break;
+
 			case 3:
-				tfMatricula.setEnabled(true);
+				tfMatricula.setEditable(false);
 				if (!tfMatricula.getText().equals("")) {
 					try {
 						if (profissionalDAO.buscarProfissional(arquivoProfissional, tfMatricula.getText()) != null) {
@@ -276,8 +244,9 @@ public class TelaProfissional extends JFrame implements ActionListener {
 
 							if (resposta == 0) {
 								try {
-									arquivoProfissional = profissionalDAO.excluirProfissional(arquivoProfissional,
-											tfMatricula.getText());
+									// arquivoProfissional =
+									// profissionalDAO.excluirProfissional(arquivoProfissional,
+									// tfMatricula.getText());
 									JOptionPane.showMessageDialog(null, "Dado excluido com sucesso!!!", "Informação",
 											JOptionPane.INFORMATION_MESSAGE);
 								} catch (NullPointerException err) {
@@ -286,7 +255,7 @@ public class TelaProfissional extends JFrame implements ActionListener {
 											"Operação Invalida", JOptionPane.WARNING_MESSAGE);
 								}
 							} else {
-								tfMatricula.setEnabled(false);
+								tfMatricula.setEditable(false);
 								barraFerramentas.bConfirmar.setEnabled(false);
 								barraFerramentas.bCancelar.setEnabled(false);
 							}
@@ -302,26 +271,58 @@ public class TelaProfissional extends JFrame implements ActionListener {
 				}
 				temp = 0;
 
+				barraFerramentas.bConfirmar.setEnabled(true);
+				barraFerramentas.bCancelar.setEnabled(true);
+
 				break;
 			default:
-				System.out.println("lol");
 				break;
 			}
 			// se tudo tiver ok, limpa os campos
 			tfMatricula.setText("");
 			limparCamposProfissional();
 
-			tfMatricula.setEnabled(true);
+			tfMatricula.setEnabled(false);
 			barraFerramentas.bConfirmar.setEnabled(false);
 			barraFerramentas.bCancelar.setEnabled(false);
 			desativarCamposProfissional();
 			temp = 0;
 
+		} else if (e.getSource() == bPesquisarMatricula) {
+			try {
+				Profissional profissional = null;
+				try {
+					profissional = profissionalDAO.buscarProfissional(arquivoProfissional, tfMatricula.getText());
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				if (profissional == null) {
+					JOptionPane.showMessageDialog(null, "Matricula não exite2!!!", "Operação Invalida",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					// tfMatricula.setText(profissional.getMatricula());
+					tfProfissional.setText(profissional.getNome());
+					tfCpf.setText(profissional.getCpf());
+					tfData.setText(String.valueOf(profissional.getData()));
+					tfSigla.setText(profissional.getSigla());
+					tfTipo.setText(profissional.getTipo());
+					tfRegisProf.setText(profissional.getNumeroRP());
+
+				}
+
+			} catch (NumberFormatException e1) {
+				JOptionPane.showMessageDialog(null, "Por favor,insira um valor valido no campo **Matricula!!!",
+						"Operação Invalida", JOptionPane.WARNING_MESSAGE);
+			} catch (NullPointerException e1) {
+				JOptionPane.showMessageDialog(null, "Matricula nao existe!!!", "Operação Invalida",
+						JOptionPane.WARNING_MESSAGE);
+			}
+			bPesquisarMatricula.setEnabled(false);
+
 		} else if (e.getSource() == barraFerramentas.bPesquisar) {
-			/*
-			 * Pensar melhor aqui
-			 */
-			temp = 2;
+			tfMatricula.setEnabled(true);
+			bPesquisarMatricula.setEnabled(true);
 
 		} else if (e.getSource() == barraFerramentas.bExcluir) {
 			temp = 3;

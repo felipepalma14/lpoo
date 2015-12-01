@@ -61,7 +61,7 @@ public class AtendimentoDAO {
 	public Atendimento[] excluirAtendimento(Atendimento[] atendimentos, String protocolo) throws NullPointerException {
 		Atendimento[] novoArray = new Atendimento[atendimentos.length - 1];
 		for (int i = 0; i < atendimentos.length; i++) {
-			if (atendimentos[i].getMatricula().equals(protocolo)) {
+			if (atendimentos[i].getProtocolo().equals(protocolo)) {
 				continue;// passa se cair aqui no if
 			} else {
 				novoArray[i] = atendimentos[i];

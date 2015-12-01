@@ -79,4 +79,9 @@ public class Profissional {
 		return data;
 	}
 
+	@Override
+	public String toString() {
+		return this.getNome();
+	}
+
 }

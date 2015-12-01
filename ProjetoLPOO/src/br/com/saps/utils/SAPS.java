@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -11,14 +12,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
+import br.com.saps.modelo.Atendimento;
+import br.com.saps.modelo.Cliente;
+import br.com.saps.modelo.Profissional;
+import br.com.saps.modelo.RegistroProfissional;
+import br.com.saps.views.TelaAtendimento;
 import br.com.saps.views.TelaProfissional;
+import br.com.saps.views.TelaRegistroProfissional;
 
 public class SAPS extends JFrame implements ActionListener {
 	// Declaração globa
-	private JLabel lTitulo, lHabilitar, lDesabilitar, lCliente, lProfissional, lAtendimento, lSair;
+	private JLabel lTitulo, lHabilitar, lDesabilitar, lCliente, lProfissional, lAtendimento, lRegistroProf, lSair;
 	private Acesso fAcesso;
-
-	private JButton bHabilitar, bCliente, bProfissional, bAtendimento, bSair;
+	private JButton bHabilitar, bCliente, bProfissional, bAtendimento, bRegistroProf, bSair;
+	private Cliente[] arquivoCliente;
+	private Atendimento[] arquivoAtendimento;
+	private Conexao conexao;
+	private ArrayList<Profissional> profissionais = Conexao.getInstance().getArrayListProfissional();
+	private ArrayList<RegistroProfissional> registros = Conexao.getInstance().getArrayListRegistro();
 
 	private SAPS() {
 		setTitle("SAPS: Sistema de Atendimento Profissional de Saúde");
@@ -58,6 +69,18 @@ public class SAPS extends JFrame implements ActionListener {
 		lCliente.setFont(new Font("TimesRoman", Font.ITALIC, 30));
 		lCliente.setBounds(100, 270, 400, 50);
 		areaTrabalho.add(lCliente);
+
+		ImageIcon iRegistroProf = new ImageIcon("imagem/cliente.png");
+		bRegistroProf = new JButton(iRegistroProf);
+		bRegistroProf.addActionListener(this);
+		areaTrabalho.add(bRegistroProf);
+		bRegistroProf.setBounds(500, 270, 50, 50);
+		bRegistroProf.setEnabled(false);
+
+		lRegistroProf = new JLabel("Registro Profissional");
+		lRegistroProf.setFont(new Font("TimesRoman", Font.ITALIC, 30));
+		lRegistroProf.setBounds(580, 270, 400, 50);
+		areaTrabalho.add(lRegistroProf);
 
 		ImageIcon iProfissional = new ImageIcon("imagem/profissional.png");
 		bProfissional = new JButton(iProfissional);
@@ -103,9 +126,11 @@ public class SAPS extends JFrame implements ActionListener {
 	public void contectar() {
 		bCliente.setEnabled(true);
 		bProfissional.setEnabled(true);
+		bAtendimento.setEnabled(true);
 		bSair.setEnabled(true);
 		fAcesso.setVisible(false);
 		bHabilitar.setEnabled(false);
+		bRegistroProf.setEnabled(true);
 
 	}
 
@@ -117,9 +142,17 @@ public class SAPS extends JFrame implements ActionListener {
 			fAcesso.setVisible(true);
 
 		} else if (e.getSource() == bProfissional) {
-			TelaProfissional tela = new TelaProfissional();
-			tela.abrirTela();
-		} else if (e.getSource() == bSair)
+			TelaProfissional tela = new TelaProfissional(profissionais);
+
+		} else if (e.getSource() == bAtendimento) {
+			TelaAtendimento tela = new TelaAtendimento(profissionais);
+			tela.abrirTela(profissionais);
+
+		} else if (e.getSource() == bRegistroProf) {
+			TelaRegistroProfissional tela = new TelaRegistroProfissional(registros);
+		}
+
+		else if (e.getSource() == bSair)
 			System.exit(0);
 
 		else

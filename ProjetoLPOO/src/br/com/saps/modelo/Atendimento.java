@@ -2,19 +2,29 @@ package br.com.saps.modelo;
 
 public class Atendimento {
 	private String protocolo;
-	private Profissional matricula;
-	private Cliente codigo;
+	private Profissional profissional;
+	private Cliente cliente;
 	private String descrição;
 	private Data dataCriacao;
+	private String Especialidade;
 
-	public Atendimento(String protocolo, Profissional profissional, Cliente cliente, String descrição,
-			Data dataCriacao) {
+	public String getEspecialidade() {
+		return Especialidade;
+	}
+
+	public void setEspecialidade(String especialidade) {
+		Especialidade = especialidade;
+	}
+
+	public Atendimento(String protocolo, Profissional profissional, Cliente cliente, String descrição, Data dataCriacao,
+			String especialidade) {
+		super();
 		this.protocolo = protocolo;
-		this.matricula = profissional;
-		this.codigo = cliente;
+		this.profissional = profissional;
+		this.cliente = cliente;
 		this.descrição = descrição;
 		this.dataCriacao = dataCriacao;
-
+		Especialidade = especialidade;
 	}
 
 	public String getProtocolo() {
@@ -25,20 +35,20 @@ public class Atendimento {
 		this.protocolo = protocolo;
 	}
 
-	public Profissional getMatricula() {
-		return matricula;
+	public Profissional getProfissional() {
+		return profissional;
 	}
 
-	public void setMatricula(Profissional matricula) {
-		this.matricula = matricula;
+	public void setProfissional(Profissional profissional) {
+		this.profissional = profissional;
 	}
 
-	public Cliente getCodigo() {
-		return codigo;
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setCodigo(Cliente codigo) {
-		this.codigo = codigo;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	public String getDescrição() {
@@ -59,7 +69,9 @@ public class Atendimento {
 
 	@Override
 	public String toString() {
-		return "Atendimento [protocolo=" + protocolo + ", matricula=" + matricula.getMatricula() + ", codigo="
-				+ codigo.getCodigo() + ", descrição=" + descrição + ", dataCriacao=" + dataCriacao + "]";
+		return "Atendimento [protocolo=" + protocolo + ", profissional=" + profissional + ", cliente=" + cliente
+				+ ", descrição=" + descrição + ", dataCriacao=" + dataCriacao + ", Especialidade=" + Especialidade
+				+ "]";
 	}
+
 }

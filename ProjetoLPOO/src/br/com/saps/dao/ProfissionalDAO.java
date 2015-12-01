@@ -1,37 +1,25 @@
 package br.com.saps.dao;
 
+import java.util.ArrayList;
+
 import br.com.saps.modelo.Data;
 import br.com.saps.modelo.Profissional;
 
 public class ProfissionalDAO {
-	public Profissional[] inserirProfissional(Profissional[] profissionais, Profissional novoProfissional) {
-		Profissional[] aux = null;
-		// Verifica se o vetor está nulo
-		if (profissionais == null) {
-			aux = new Profissional[1];
-			aux[0] = novoProfissional;
-
-		} else {
-			// Copia todos os dados existentes para o novo vetor maior
-			aux = new Profissional[profissionais.length + 1];
-			for (int i = 0; i < profissionais.length; i++) {
-				aux[i] = profissionais[i];
-				// System.out.println(aux[i] + " " + i);
-			}
-			// adiciona o novo cliente no ultimo endereco do vetor
-			aux[profissionais.length] = novoProfissional;
-		}
-		return aux;
+	public ArrayList<Profissional> inserirProfissional(ArrayList<Profissional> profissionais,
+			Profissional novoProfissional) {
+		profissionais.add(novoProfissional);
+		return profissionais;
 	}
 
 	/*
 	 * Metodo Buscar Cliente Retorna um objeto do tipo Cliente de acordo com o
 	 * codigo do cliente passado na assinatura do metodo
 	 */
-	public Profissional buscarProfissional(Profissional[] profissionais, String matricula) throws Exception {
-		for (int i = 0; i < profissionais.length; i++) {
-			if (profissionais[i].getMatricula().equals(matricula)) {
-				return profissionais[i];
+	public Profissional buscarProfissional(ArrayList<Profissional> profissionais, String matricula) throws Exception {
+		for (Profissional profissional : profissionais) {
+			if (profissional.getMatricula().equals(matricula)) {
+				return profissional;
 			}
 		}
 		return null;
@@ -46,11 +34,15 @@ public class ProfissionalDAO {
 		}
 	}
 
-	public void editarProfissioanal(Profissional[] profissionais, Profissional profissional) {
-		/*
-		 * 
-		 * em desenvolvimento
-		 */
+	// Verificar , está igual ao metodo buscar
+	public Profissional editarProfissioanal(Profissional[] profissionais, String matricula) {
+		for (Profissional profissional : profissionais) {
+			// Verifica se matricula existe no vetor de profissionais
+			if (profissional.getMatricula().equals(matricula)) {
+				return profissional;
+			}
+		}
+		return null;
 	}
 
 	public Profissional[] excluirProfissional(Profissional[] profissionais, String matricula)
@@ -80,11 +72,12 @@ public class ProfissionalDAO {
 		return novoProfissional;
 	}
 
-	public static String gerarMatricula(Profissional[] profissionais) {
-		if (profissionais == null) {
+	public static String gerarMatricula(ArrayList<Profissional> profissionais) {
+		if (profissionais.isEmpty()) {
 			return "20151";
 		}
-		int tamanho = profissionais.length;
-		return String.valueOf(Integer.parseInt(profissionais[tamanho - 1].getMatricula()) + 1);
+		int tamanho = profissionais.size() - 1;
+		int ultimo = Integer.parseInt(profissionais.get(tamanho).getMatricula()) + 1;
+		return String.valueOf(ultimo);
 	}
 }

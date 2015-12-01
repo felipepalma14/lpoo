@@ -18,11 +18,12 @@ public class teste {
 
 		Profissional sidney = new Profissional("123", "00000-0000", "Sidney", "24", "YMCA", "Dentista", nasc);
 
-		Atendimento ficha = new Atendimento("222", sidney, felipe, "Eu tava Doente", nasc);
+		Atendimento ficha = new Atendimento("222", sidney, felipe, "Eu tava Doente", nasc, "LOL");
 
 		clienteDAO.mostrarClientes(arquivoCliente);
 
 		System.out.println("Resultado: " + clienteDAO.buscarCliente(arquivoCliente, felipe.getCodigo()));
+		System.out.println("ficha: " + ficha);
 
 	}
 
