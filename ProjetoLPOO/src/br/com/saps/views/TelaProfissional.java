@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,6 +23,8 @@ import javax.swing.text.MaskFormatter;
 import br.com.saps.dao.ProfissionalDAO;
 import br.com.saps.modelo.Data;
 import br.com.saps.modelo.Profissional;
+import br.com.saps.modelo.RegistroProfissional;
+import br.com.saps.modelo.TipoProfissional;
 import br.com.saps.utils.ToolBar;
 
 public class TelaProfissional extends JFrame implements ActionListener {
@@ -34,13 +37,14 @@ public class TelaProfissional extends JFrame implements ActionListener {
 	private JTextField tfRegisProf;
 	private JLabel lRegisProf;
 	private JLabel tSigla;
-	private JTextField tfSigla;
+	private JComboBox<RegistroProfissional> comboBoxSigla;
 	private JLabel lTipo;
-	private JTextField tfTipo;
+	private JComboBox<TipoProfissional> comboBoxTipo;
 	private JFormattedTextField tfData, tfCpf;
 	private ProfissionalDAO profissionalDAO;
 	private ArrayList<Profissional> arquivoProfissional;// =
-														// Conexao.getInstance().getArrayListProfissional();
+	private ArrayList<RegistroProfissional> registros;
+	private ArrayList<TipoProfissional> tipos;
 	private JButton bPesquisarMatricula;
 
 	private int temp = 0;
@@ -52,9 +56,12 @@ public class TelaProfissional extends JFrame implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public TelaProfissional(ArrayList<Profissional> arquivo) {
-		initialize();
+	public TelaProfissional(ArrayList<Profissional> arquivo, ArrayList<RegistroProfissional> registros,
+			ArrayList<TipoProfissional> tipos) {
 		this.arquivoProfissional = arquivo;
+		this.registros = registros;
+		this.tipos = tipos;
+		initialize();
 		frmSapsSistema.setVisible(true);
 		frmSapsSistema.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
@@ -63,15 +70,18 @@ public class TelaProfissional extends JFrame implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		barraFerramentas = new ToolBar();
-		barraFerramentas.setBounds(1, 2, 619, 57);
+
 		frmSapsSistema = new JFrame();
 		frmSapsSistema.setFont(new Font("Adobe Kaiti Std R", Font.BOLD, 12));
 		frmSapsSistema.setTitle("SAPS - Sistema de Atendimento ao Profissional de Sa\u00FAde");
 		frmSapsSistema.setBounds(100, 100, 636, 383);
 		frmSapsSistema.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSapsSistema.getContentPane().setLayout(null);
+
+		barraFerramentas = new ToolBar();
+		barraFerramentas.setBounds(1, 2, 619, 57);
 		frmSapsSistema.getContentPane().add(barraFerramentas);
+
 		profissionalDAO = new ProfissionalDAO();
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(
@@ -156,21 +166,25 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		tSigla.setBounds(20, 162, 59, 14);
 		panel.add(tSigla);
 
-		tfSigla = new JTextField();
-		tfSigla.setBounds(124, 162, 86, 20);
-		panel.add(tfSigla);
-		tfSigla.setColumns(10);
-		tfSigla.setEnabled(false);
+		comboBoxSigla = new JComboBox();
+		for (RegistroProfissional registro : registros) {
+			comboBoxSigla.addItem(registro);
+		}
+		comboBoxSigla.setBounds(124, 162, 150, 20);
+		panel.add(comboBoxSigla);
+		comboBoxSigla.setEnabled(false);
 
 		lTipo = new JLabel("Tipo");
 		lTipo.setBounds(20, 185, 46, 14);
 		panel.add(lTipo);
 
-		tfTipo = new JTextField();
-		tfTipo.setBounds(124, 185, 86, 20);
-		panel.add(tfTipo);
-		tfTipo.setColumns(10);
-		tfTipo.setEnabled(false);
+		comboBoxTipo = new JComboBox();
+		for (TipoProfissional tipoProfissional : tipos) {
+			comboBoxTipo.addItem(tipoProfissional);
+		}
+		comboBoxTipo.setBounds(124, 185, 150, 20);
+		panel.add(comboBoxTipo);
+		comboBoxTipo.setEnabled(false);
 
 		barraFerramentas.bConfirmar.setEnabled(false);
 		barraFerramentas.bCancelar.setEnabled(false);
@@ -196,13 +210,27 @@ public class TelaProfissional extends JFrame implements ActionListener {
 			barraFerramentas.bConfirmar.setEnabled(true);
 			barraFerramentas.bCancelar.setEnabled(true);
 
+			/*
+			 * Verifica se existe sigla e especialidade se nao houver , fecha a
+			 * tela de cadastro
+			 */
+			if (comboBoxSigla.getSelectedItem() == null) {
+				JOptionPane.showMessageDialog(null, "Nenhuma Sigla cadastrada!!!", "Operação Invalida",
+						JOptionPane.INFORMATION_MESSAGE);
+				frmSapsSistema.dispose();
+			} else if (comboBoxTipo.getSelectedItem() == null) {
+				JOptionPane.showMessageDialog(null, "Nenhuma Especialidade cadastrada!!!", "Operação Invalida",
+						JOptionPane.INFORMATION_MESSAGE);
+				frmSapsSistema.dispose();
+			}
+
 			tfMatricula.setEnabled(false);
 			tfMatricula.setText(ProfissionalDAO.gerarMatricula(arquivoProfissional));
 			tfProfissional.setEnabled(true);
 			tfCpf.setEnabled(true);
 			tfRegisProf.setEnabled(true);
-			tfSigla.setEnabled(true);
-			tfTipo.setEnabled(true);
+			comboBoxSigla.setEnabled(true);
+			comboBoxTipo.setEnabled(true);
 			tfData.setEnabled(true);
 
 		} else if (e.getSource() == barraFerramentas.bConfirmar) {
@@ -211,8 +239,7 @@ public class TelaProfissional extends JFrame implements ActionListener {
 				try {
 					Data data = Data.montaData(tfData.getText().substring(0, 2), tfData.getText().substring(3, 5),
 							tfData.getText().substring(6, 10));
-					String[] componentes = { tfProfissional.getText(), tfMatricula.getText(), tfSigla.getText(),
-							tfTipo.getText(), tfRegisProf.getText() };
+					String[] componentes = { tfProfissional.getText(), tfMatricula.getText(), tfRegisProf.getText() };
 					for (String componente : componentes) {
 						if (componente.equals("")) {
 							JOptionPane.showMessageDialog(null, "Preencha todos os campos!!!", "Operação Invalida",
@@ -221,8 +248,9 @@ public class TelaProfissional extends JFrame implements ActionListener {
 						}
 					}
 					Profissional novoProfissional = profissionalDAO.criarProfissional(tfProfissional.getText(),
-							tfMatricula.getText(), tfCpf.getText(), data, tfSigla.getText(), tfTipo.getText(),
-							tfRegisProf.getText());
+							tfMatricula.getText(), tfCpf.getText(), data,
+							(RegistroProfissional) comboBoxSigla.getSelectedItem(),
+							(TipoProfissional) comboBoxTipo.getSelectedItem(), tfRegisProf.getText());
 					arquivoProfissional = profissionalDAO.inserirProfissional(arquivoProfissional, novoProfissional);
 
 				} catch (NumberFormatException er) {
@@ -305,8 +333,8 @@ public class TelaProfissional extends JFrame implements ActionListener {
 					tfProfissional.setText(profissional.getNome());
 					tfCpf.setText(profissional.getCpf());
 					tfData.setText(String.valueOf(profissional.getData()));
-					tfSigla.setText(profissional.getSigla());
-					tfTipo.setText(profissional.getTipo());
+					comboBoxSigla.setSelectedItem(profissional.getSigla());
+					comboBoxTipo.setSelectedItem(profissional.getTipo());
 					tfRegisProf.setText(profissional.getNumeroRP());
 
 				}
@@ -357,8 +385,6 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		tfProfissional.setEnabled(false);
 		tfCpf.setEnabled(false);
 		tfData.setEnabled(false);
-		tfSigla.setEnabled(false);
-		tfTipo.setEnabled(false);
 		tfRegisProf.setEnabled(false);
 	}
 
@@ -366,8 +392,6 @@ public class TelaProfissional extends JFrame implements ActionListener {
 		tfProfissional.setText("");
 		tfCpf.setText("");
 		tfData.setText("");
-		tfSigla.setText("");
-		tfTipo.setText("");
 		tfRegisProf.setText("");
 	}
 }

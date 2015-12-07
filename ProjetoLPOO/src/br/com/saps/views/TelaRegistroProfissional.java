@@ -51,7 +51,7 @@ public class TelaRegistroProfissional extends JFrame implements ActionListener {
 		contentPane.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resgistro Profissional",
+		panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Registro Profissional",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel.setBounds(28, 70, 549, 164);
 		contentPane.add(panel);
@@ -100,6 +100,7 @@ public class TelaRegistroProfissional extends JFrame implements ActionListener {
 
 		bPesquisarId.addActionListener(this);
 
+		registroDAO = new RegistroProfissionalDAO();
 	}
 
 	@Override
@@ -132,11 +133,6 @@ public class TelaRegistroProfissional extends JFrame implements ActionListener {
 							tfDescricao.getText());
 					this.registros.add(novoRegistro);
 
-					for (RegistroProfissional registroProfissional : registros) {
-						System.out.println(registroProfissional.getDescricao());
-					}
-					System.out.println(novoRegistro.getDescricao());
-					registroDAO = new RegistroProfissionalDAO();
 					this.registros = registroDAO.inserirRegistroProfissional(registros, novoRegistro);
 				} catch (NumberFormatException er) {
 					JOptionPane.showMessageDialog(null, "Campo **Descrção invalidos!!!", "Operação Invalida",

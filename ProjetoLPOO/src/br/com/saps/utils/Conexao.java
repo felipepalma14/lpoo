@@ -2,6 +2,7 @@ package br.com.saps.utils;
 
 import java.util.ArrayList;
 
+import br.com.saps.modelo.Atendimento;
 import br.com.saps.modelo.Cliente;
 import br.com.saps.modelo.Profissional;
 import br.com.saps.modelo.RegistroProfissional;
@@ -16,6 +17,7 @@ public class Conexao {
 	private ArrayList<RegistroProfissional> registros = new ArrayList<>();
 	private ArrayList<TipoProfissional> tipos = new ArrayList<>();
 	private ArrayList<Cliente> clientes = new ArrayList<>();
+	private ArrayList<Atendimento> atendimentos = new ArrayList<>();
 
 	private static Conexao instance;
 
@@ -44,5 +46,9 @@ public class Conexao {
 
 	public ArrayList<RegistroProfissional> getArrayListRegistro() {
 		return registros;
+	}
+
+	public ArrayList<Atendimento> getArrayListAtendimento() {
+		return atendimentos;
 	}
 }

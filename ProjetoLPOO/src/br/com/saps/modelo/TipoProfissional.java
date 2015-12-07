@@ -4,6 +4,12 @@ public class TipoProfissional {
 	private long id;
 	private String descricao;
 
+	public TipoProfissional(long id, String descricao) {
+		super();
+		this.id = id;
+		this.descricao = descricao;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -22,7 +28,7 @@ public class TipoProfissional {
 
 	@Override
 	public String toString() {
-		return "TipoProfissional [id=" + id + ", descricao=" + descricao + "]";
+		return id + " - " + descricao;
 	}
 
 }

@@ -4,24 +4,26 @@ public class Cliente {
 
 	private int codigo;
 	private String nome, email;
-	private int telefone, celular;
+	private String telefone, celular;
 	private Data dataNasc;
 	private int idade;
-	private char sexo; // M: masculino; F: feminino
+	private String sexo; // M: masculino; F: feminino
 	private Endereco endereco;
 
 	public Cliente() {
 	}
 
-	public Cliente(String nome) {
-		this.nome = nome;
-	}
-
-	public Cliente(int codigo, String nome, Data nascimento, char sexo) {
+	public Cliente(int codigo, String nome, String email, String telefone, String celular, Data dataNasc, int idade,
+			String sexo, Endereco endereco) {
 		this.codigo = codigo;
 		this.nome = nome;
-		this.dataNasc = new Data(nascimento.getDia(), nascimento.getMes(), nascimento.getAno());
+		this.email = email;
+		this.telefone = telefone;
+		this.celular = celular;
+		this.dataNasc = dataNasc;
+		this.idade = idade;
 		this.sexo = sexo;
+		this.endereco = endereco;
 	}
 
 	public void setCodigo(int c) {
@@ -36,7 +38,7 @@ public class Cliente {
 		dataNasc = d;
 	}
 
-	public void setSexo(char s) {
+	public void setSexo(String s) {
 		sexo = s;
 	}
 
@@ -59,7 +61,7 @@ public class Cliente {
 		return dataNasc.toString();
 	}
 
-	public char getSexo() {
+	public String getSexo() {
 		return sexo;
 	}
 
@@ -75,9 +77,41 @@ public class Cliente {
 		this.endereco = endereco;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
+	}
+
+	public int getIdade() {
+		return idade;
+	}
+
+	public void setIdade(int idade) {
+		this.idade = idade;
+	}
+
 	@Override
 	public String toString() {
-		return "Cliente [codigo=" + codigo + ", nome=" + nome + ", dataNasc=" + dataNasc + ", sexo=" + sexo + "]";
+		return codigo + " - " + nome;
 	}
 
 }

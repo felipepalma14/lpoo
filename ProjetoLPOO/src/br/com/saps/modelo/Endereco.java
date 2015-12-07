@@ -7,12 +7,16 @@ public class Endereco {
 	private String complemento;
 	private String bairro, cidade, estado;
 
-	public Endereco(String logradouro, String cep, String numero, String complemento) {
+	public Endereco(String logradouro, String cep, String numero, String complemento, String bairro, String cidade,
+			String estado) {
 		super();
 		this.logradouro = logradouro;
 		this.cep = cep;
 		this.numero = numero;
 		this.complemento = complemento;
+		this.bairro = bairro;
+		this.cidade = cidade;
+		this.estado = estado;
 	}
 
 	public String getLogradouro() {

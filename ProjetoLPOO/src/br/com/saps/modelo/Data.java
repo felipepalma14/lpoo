@@ -33,7 +33,7 @@ public class Data {
 		this.ano = ano;
 	}
 
-	public static Data montaData(String dia, String mes, String ano) {
+	public static Data montaData(String dia, String mes, String ano) throws NumberFormatException {
 		return new Data(Integer.parseInt(dia), Integer.parseInt(mes), Integer.parseInt(ano));
 	}
 

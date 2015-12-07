@@ -16,20 +16,29 @@ import br.com.saps.modelo.Atendimento;
 import br.com.saps.modelo.Cliente;
 import br.com.saps.modelo.Profissional;
 import br.com.saps.modelo.RegistroProfissional;
+import br.com.saps.modelo.TipoProfissional;
 import br.com.saps.views.TelaAtendimento;
+import br.com.saps.views.TelaCliente;
+import br.com.saps.views.TelaEspecialidade;
 import br.com.saps.views.TelaProfissional;
 import br.com.saps.views.TelaRegistroProfissional;
 
 public class SAPS extends JFrame implements ActionListener {
 	// Declaração globa
-	private JLabel lTitulo, lHabilitar, lDesabilitar, lCliente, lProfissional, lAtendimento, lRegistroProf, lSair;
+	private JLabel lTitulo, lHabilitar, lDesabilitar, lCliente, lProfissional, lAtendimento, lRegistroProf,
+			lEspecialidade, lRelatorios, lSair;
 	private Acesso fAcesso;
-	private JButton bHabilitar, bCliente, bProfissional, bAtendimento, bRegistroProf, bSair;
+	private JButton bHabilitar, bCliente, bProfissional, bAtendimento, bRegistroProf, bEspecialidade, bRelatorios,
+			bSair;
 	private Cliente[] arquivoCliente;
 	private Atendimento[] arquivoAtendimento;
 	private Conexao conexao;
 	private ArrayList<Profissional> profissionais = Conexao.getInstance().getArrayListProfissional();
 	private ArrayList<RegistroProfissional> registros = Conexao.getInstance().getArrayListRegistro();
+	private ArrayList<Cliente> clientes = Conexao.getInstance().getArrayListCliente();
+	private ArrayList<TipoProfissional> tipos = Conexao.getInstance().getArrayListTipoProfissional();
+
+	private ArrayList<Atendimento> atendimentos = Conexao.getInstance().getArrayListAtendimento();
 
 	private SAPS() {
 		setTitle("SAPS: Sistema de Atendimento Profissional de Saúde");
@@ -82,6 +91,18 @@ public class SAPS extends JFrame implements ActionListener {
 		lRegistroProf.setBounds(580, 270, 400, 50);
 		areaTrabalho.add(lRegistroProf);
 
+		ImageIcon iRelatorio = new ImageIcon("imagem/relatorio.png");
+		bRelatorios = new JButton(iRelatorio);
+		bRelatorios.addActionListener(this);
+		areaTrabalho.add(bRelatorios);
+		bRelatorios.setBounds(980, 270, 50, 50);
+		bRelatorios.setEnabled(false);
+
+		lRelatorios = new JLabel("Relatorios");
+		lRelatorios.setFont(new Font("TimesRoman", Font.ITALIC, 30));
+		lRelatorios.setBounds(1040, 270, 400, 50);
+		areaTrabalho.add(lRelatorios);
+
 		ImageIcon iProfissional = new ImageIcon("imagem/profissional.png");
 		bProfissional = new JButton(iProfissional);
 		bProfissional.addActionListener(this);
@@ -93,6 +114,18 @@ public class SAPS extends JFrame implements ActionListener {
 		lProfissional.setFont(new Font("TimesRoman", Font.ITALIC, 30));
 		lProfissional.setBounds(100, 340, 400, 50);
 		areaTrabalho.add(lProfissional);
+
+		ImageIcon iEspecialidade = new ImageIcon("imagem/cliente.png");
+		bEspecialidade = new JButton(iEspecialidade);
+		bEspecialidade.addActionListener(this);
+		areaTrabalho.add(bEspecialidade);
+		bEspecialidade.setBounds(500, 340, 50, 50);
+		bEspecialidade.setEnabled(false);
+
+		lEspecialidade = new JLabel("Especialidades");
+		lEspecialidade.setFont(new Font("TimesRoman", Font.ITALIC, 30));
+		lEspecialidade.setBounds(580, 340, 400, 50);
+		areaTrabalho.add(lEspecialidade);
 
 		ImageIcon iAtendimento = new ImageIcon("imagem/atendimento.png");
 		bAtendimento = new JButton(iAtendimento);
@@ -131,6 +164,9 @@ public class SAPS extends JFrame implements ActionListener {
 		fAcesso.setVisible(false);
 		bHabilitar.setEnabled(false);
 		bRegistroProf.setEnabled(true);
+		bEspecialidade.setEnabled(true);
+		bCliente.setEnabled(true);
+		bRelatorios.setEnabled(true);
 
 	}
 
@@ -142,14 +178,24 @@ public class SAPS extends JFrame implements ActionListener {
 			fAcesso.setVisible(true);
 
 		} else if (e.getSource() == bProfissional) {
-			TelaProfissional tela = new TelaProfissional(profissionais);
+			for (RegistroProfissional item : registros) {
+				System.out.println(item);
+			}
+			TelaProfissional tela = new TelaProfissional(profissionais, registros, tipos);
 
 		} else if (e.getSource() == bAtendimento) {
-			TelaAtendimento tela = new TelaAtendimento(profissionais);
-			tela.abrirTela(profissionais);
+			TelaAtendimento tela = new TelaAtendimento(atendimentos, profissionais, clientes);
+			tela.abrirTela(atendimentos, profissionais, clientes);
 
 		} else if (e.getSource() == bRegistroProf) {
 			TelaRegistroProfissional tela = new TelaRegistroProfissional(registros);
+
+		} else if (e.getSource() == bEspecialidade) {
+			TelaEspecialidade tela = new TelaEspecialidade(tipos);
+			tela.abrirTela(tipos);
+		} else if (e.getSource() == bCliente) {
+			TelaCliente tela = new TelaCliente(clientes);
+			tela.abrirTela(clientes);
 		}
 
 		else if (e.getSource() == bSair)

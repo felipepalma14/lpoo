@@ -1,59 +1,49 @@
 package br.com.saps.dao;
 
+import java.util.ArrayList;
+
 import br.com.saps.modelo.Cliente;
 
 public class ClienteDAO {
 
-	/*
-	 * Metodo para Inserção
-	 * 
-	 */
-	public Cliente[] inserir(Cliente[] clientes, Cliente novoCliente) {
-		Cliente[] aux = null;
-		// Verifica se o vetor está nulo
-		if (clientes == null) {
-			aux = new Cliente[1];
-			aux[0] = novoCliente;
-
-		} else {
-			// Copia todos os dados existentes para o novo vetor maior
-			aux = new Cliente[clientes.length + 1];
-			for (int i = 0; i < clientes.length; i++) {
-				aux[i] = clientes[i];
-				// System.out.println(aux[i] + " " + i);
-			}
-			// adiciona o novo cliente no ultimo endereco do vetor
-			aux[clientes.length] = novoCliente;
-		}
-		return aux;
+	public ArrayList<Cliente> inserirCliente(ArrayList<Cliente> clientes, Cliente novoCliente) {
+		clientes.add(novoCliente);
+		return clientes;
 	}
 
 	/*
 	 * Metodo Buscar Cliente Retorna um objeto do tipo Cliente de acordo com o
 	 * codigo do cliente passado na assinatura do metodo
 	 */
-	public Cliente buscarCliente(Cliente[] clientes, int codigo) {
-		for (int i = 0; i < clientes.length; i++) {
-			if (clientes[i].getCodigo() == codigo) {
-				return clientes[i];
+	public Cliente buscarCliente(ArrayList<Cliente> clientes, String codigo) throws Exception {
+		for (Cliente cliente : clientes) {
+			if (cliente.getCodigo() == Integer.parseInt(codigo)) {
+				return cliente;
 			}
 		}
 		return null;
 	}
 
-	/*
-	 * Metodo mostrar Clientes mostrar todos os clientes cadastrados
-	 */
-	public void mostrarClientes(Cliente[] clientes) {
+	// Verificar , está igual ao metodo buscar
+
+	public ArrayList<Cliente> excluirCliente(ArrayList<Cliente> clientes, String codigo) throws NullPointerException {
 		for (Cliente cliente : clientes) {
-			System.out.println(cliente);
+			if (cliente.getCodigo() == Integer.parseInt(codigo)) {
+				clientes.remove(cliente);
+				return clientes;
+			}
 		}
+		return null;
+
 	}
 
-	public void editarCliente(Cliente[] clientes, Cliente cliente) {
-		/*
-		 * 
-		 * em desenvolvimento
-		 */
+	public static String gerarCodigo(ArrayList<Cliente> clientes) {
+		if (clientes.isEmpty()) {
+			return "1000";
+		}
+		int tamanho = clientes.size() - 1;
+		long ultimo = clientes.get(tamanho).getCodigo() + 1;
+		return String.valueOf(ultimo);
 	}
+
 }

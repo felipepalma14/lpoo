@@ -30,11 +30,11 @@ import br.com.saps.utils.ToolBar;
 public class TelaAtendimento extends JFrame implements ActionListener {
 
 	private JPanel contentPane;
-	private Cliente[] listaCliente = null;
+	private ArrayList<Cliente> listaCliente;
 	private ArrayList<Profissional> listaProfissional;
 	private JTextField tfProtocolo;
 	private ToolBar barraFerramentas;
-	private Atendimento[] arquivoAtendimento = null;
+	private ArrayList<Atendimento> listaAtendimento;
 	private AtendimentoDAO atendimentoDAO;
 	private ClienteDAO pacienteDAO;
 	private ProfissionalDAO profissionalDAO;
@@ -47,11 +47,12 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void abrirTela(final ArrayList<Profissional> profissionais) {
+	public static void abrirTela(final ArrayList<Atendimento> atendimentos, final ArrayList<Profissional> profissionais,
+			final ArrayList<Cliente> clientes) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaAtendimento frame = new TelaAtendimento(profissionais);
+					TelaAtendimento frame = new TelaAtendimento(atendimentos, profissionais, clientes);
 					frame.setVisible(true);
 					frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				} catch (Exception e) {
@@ -64,9 +65,14 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 	/**
 	 * Create the frame.
 	 */
-	public TelaAtendimento(ArrayList<Profissional> profissionais) {
+	public TelaAtendimento(ArrayList<Atendimento> atendimentos, ArrayList<Profissional> profissionais,
+			ArrayList<Cliente> clientes) {
 		// recebendo lista de profissionais
 		this.listaProfissional = profissionais;
+		this.listaCliente = clientes;
+		this.listaAtendimento = atendimentos;
+		atendimentoDAO = new AtendimentoDAO();
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 626, 456);
 		contentPane = new JPanel();
@@ -90,13 +96,10 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 		lPaciente.setBounds(23, 60, 66, 14);
 		panel.add(lPaciente);
 
-		Cliente p1 = new Cliente("Joao Almeida");
-		Cliente p2 = new Cliente("Carla Dias");
-
-		// listaCliente = pacienteDAO.inserir(listaCliente, p1);
-		// listaCliente = pacienteDAO.inserir(listaCliente, p2);
-
-		JComboBox<Cliente> comboboxPaciente = new JComboBox();
+		comboboxPaciente = new JComboBox();
+		for (Cliente cliente : listaCliente) {
+			comboboxPaciente.addItem(cliente);
+		}
 
 		comboboxPaciente.setBounds(115, 60, 176, 20);
 		panel.add(comboboxPaciente);
@@ -110,14 +113,11 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 		panel.add(lEspecialidade);
 
 		String[] especialidades = { "Dentista", "Clinico Geral", "Pediatra" };
-		JComboBox comboboxEspecialidade = new JComboBox(especialidades);
+		comboboxEspecialidade = new JComboBox(especialidades);
 		comboboxEspecialidade.setBounds(115, 85, 176, 20);
 		panel.add(comboboxEspecialidade);
 
-		for (Profissional prof : listaProfissional) {
-			System.out.println(prof);
-		}
-		JComboBox<Profissional> comboboxProfissional = new JComboBox();
+		comboboxProfissional = new JComboBox();
 		for (Profissional profissional : listaProfissional) {
 			comboboxProfissional.addItem(profissional);
 		}
@@ -141,7 +141,7 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
-		JTextArea textAreaDescricao = new JTextArea();
+		textAreaDescricao = new JTextArea();
 		textAreaDescricao.setBounds(10, 21, 570, 138);
 		panel_1.add(textAreaDescricao);
 
@@ -156,6 +156,10 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 		barraFerramentas.bExcluir.addActionListener(this);
 	}
 
+	/*
+	 * INCLUIR O BUTAO PESQUISAR POR PROTOCOLO
+	 */
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		/*
@@ -168,7 +172,7 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 			barraFerramentas.bCancelar.setEnabled(true);
 
 			tfProtocolo.setEditable(false);
-			tfProtocolo.setText(AtendimentoDAO.gerarProtocolo(arquivoAtendimento));
+			tfProtocolo.setText(atendimentoDAO.gerarProtocolo(listaAtendimento));
 			/*
 			 * comboboxEspecialidade.setEnabled(false);
 			 * comboboxPaciente.setEnabled(false);
@@ -180,12 +184,13 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 
 				Calendar calendar = Calendar.getInstance();
 				Data dataCriacao = new Data(calendar.DAY_OF_MONTH, calendar.MONTH + 1, calendar.YEAR);
-
+				System.out.println(textAreaDescricao.getText());
 				Atendimento novoAtendimento = new Atendimento(tfProtocolo.getText(),
 						(Profissional) comboboxProfissional.getSelectedItem(),
 						(Cliente) comboboxPaciente.getSelectedItem(), textAreaDescricao.getText(), dataCriacao,
 						(String) comboboxEspecialidade.getSelectedItem());
-				arquivoAtendimento = atendimentoDAO.inserirAtendimento(arquivoAtendimento, novoAtendimento);
+
+				listaAtendimento = atendimentoDAO.inserirAtendimento(listaAtendimento, novoAtendimento);
 
 				break;
 
@@ -193,7 +198,7 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 
 				Atendimento atendimento = null;
 				try {
-					atendimento = atendimentoDAO.buscarAtendimento(arquivoAtendimento, tfProtocolo.getText());
+					atendimento = atendimentoDAO.buscarAtendimento(listaAtendimento, tfProtocolo.getText());
 					tfProtocolo.setText(atendimento.getProtocolo());
 					comboboxProfissional.setSelectedItem(atendimento.getProfissional());
 					comboboxEspecialidade.setSelectedItem(atendimento.getEspecialidade());
@@ -218,14 +223,14 @@ public class TelaAtendimento extends JFrame implements ActionListener {
 				tfProtocolo.setEnabled(true);
 				if (!tfProtocolo.getText().equals("")) {
 					try {
-						if (atendimentoDAO.buscarAtendimento(arquivoAtendimento, tfProtocolo.getText()) != null) {
+						if (atendimentoDAO.buscarAtendimento(listaAtendimento, tfProtocolo.getText()) != null) {
 							int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir?", "Alerta",
 									JOptionPane.YES_NO_OPTION);
 							System.out.println(resposta);
 
 							if (resposta == 0) {
 								try {
-									arquivoAtendimento = atendimentoDAO.excluirAtendimento(arquivoAtendimento,
+									listaAtendimento = atendimentoDAO.excluirAtendimento(listaAtendimento,
 											tfProtocolo.getText());
 									JOptionPane.showMessageDialog(null, "Dado excluido com sucesso!!!", "Informação",
 											JOptionPane.INFORMATION_MESSAGE);

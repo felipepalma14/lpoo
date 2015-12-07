@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import br.com.saps.modelo.Data;
 import br.com.saps.modelo.Profissional;
+import br.com.saps.modelo.RegistroProfissional;
+import br.com.saps.modelo.TipoProfissional;
 
 public class ProfissionalDAO {
 	public ArrayList<Profissional> inserirProfissional(ArrayList<Profissional> profissionais,
@@ -58,8 +60,8 @@ public class ProfissionalDAO {
 		return novoArray;
 	}
 
-	public Profissional criarProfissional(String nome, String matricula, String cpf, Data nasc, String sigla,
-			String tipo, String registroProf) {
+	public Profissional criarProfissional(String nome, String matricula, String cpf, Data nasc,
+			RegistroProfissional sigla, TipoProfissional tipo, String registroProf) {
 		Profissional novoProfissional = new Profissional();
 		novoProfissional.setNome(nome);
 		novoProfissional.setMatricula(matricula);

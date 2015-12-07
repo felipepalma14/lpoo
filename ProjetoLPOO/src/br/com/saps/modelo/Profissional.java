@@ -5,15 +5,15 @@ public class Profissional {
 	private String cpf;
 	private String nome;
 	private String numeroRP;
-	private String sigla;
-	private String tipo;
+	private RegistroProfissional sigla;
+	private TipoProfissional tipo;
 	private Data data;
 
 	public Profissional() {
 	}
 
-	public Profissional(String matricula, String cpf, String nome, String numeroRP, String sigla, String tipo,
-			Data data) {
+	public Profissional(String matricula, String cpf, String nome, String numeroRP, RegistroProfissional sigla,
+			TipoProfissional tipo, Data data) {
 		this.matricula = matricula;
 		this.cpf = cpf;
 		this.nome = nome;
@@ -59,19 +59,19 @@ public class Profissional {
 		this.numeroRP = numeroRP;
 	}
 
-	public String getSigla() {
+	public RegistroProfissional getSigla() {
 		return sigla;
 	}
 
-	public void setSigla(String sigla) {
+	public void setSigla(RegistroProfissional sigla) {
 		this.sigla = sigla;
 	}
 
-	public String getTipo() {
+	public TipoProfissional getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TipoProfissional tipo) {
 		this.tipo = tipo;
 	}
 
@@ -81,7 +81,7 @@ public class Profissional {
 
 	@Override
 	public String toString() {
-		return this.getNome();
+		return matricula + " - " + nome;
 	}
 
 }

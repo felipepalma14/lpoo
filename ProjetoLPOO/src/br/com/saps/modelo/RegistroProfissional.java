@@ -49,7 +49,7 @@ public class RegistroProfissional {
 
 	@Override
 	public String toString() {
-		return "RegistroProfissional [id=" + id + ", descricao=" + descricao + "]";
+		return id + " - " + descricao;
 	}
 
 }
